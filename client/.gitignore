@@ -2,11 +2,8 @@
 
 # dependencies
 /node_modules
-<<<<<<< HEAD
 /.pnp
 .pnp.js
-=======
->>>>>>> ba96f5f (Adding proper structure for a full stack node application)
 
 # testing
 /coverage
@@ -15,11 +12,6 @@
 /build
 
 # misc
-<<<<<<< HEAD
-=======
-*.log
-.env
->>>>>>> ba96f5f (Adding proper structure for a full stack node application)
 .DS_Store
 .env.local
 .env.development.local
