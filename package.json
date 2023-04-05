@@ -20,6 +20,9 @@
   "homepage": "https://github.com/fzramos/personal-health-tracker#readme",
   "type": "module",
   "dependencies": {
-    "express": "^4.18.2"
+    "debug": "^4.3.4",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "morgan": "^1.10.0"
   }
 }
