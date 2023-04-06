@@ -3,10 +3,13 @@ dotenv.config();
 import morgan from 'morgan';
 import createDebug from 'debug';
 const debug = createDebug('app:entry_point');
-import config from 'config';
+import winston from 'winston';
 import express from 'express';
-
 const app = express();
+
+import logging from './startup/logging.js';
+logging();
+
 app.use(express.json());
 if (app.get('env') === 'development') {
   app.use(morgan('tiny'));
@@ -57,4 +60,4 @@ app.get('/api/weight', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => console.log(`Server listening...`));
+app.listen(PORT, () => winston.info(`Server listening...`));
