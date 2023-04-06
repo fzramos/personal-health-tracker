@@ -1,8 +1,9 @@
-import morgan from 'morgan';
-import creatDebug from 'debug';
-const debug = creatDebug('index');
 import * as dotenv from 'dotenv';
 dotenv.config();
+import morgan from 'morgan';
+import createDebug from 'debug';
+const debug = createDebug('app:entry_point');
+import config from 'config';
 import express from 'express';
 
 const app = express();
@@ -53,11 +54,6 @@ const users = [
 app.get('/api/weight', (req, res) => {
   res.send(weight_history);
 });
-
-// should we add get route with multiple optional parameters
-// such as subject, user id
-// and separate route for weight id? is that userful?
-// goal is for all these routes to only let user see their own data, not everyones via JWT
 
 const PORT = process.env.PORT || 3000;
 
