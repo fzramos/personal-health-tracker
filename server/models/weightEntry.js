@@ -29,7 +29,7 @@ const weightEntrySchema = new mongoose.Schema({
     type: String,
     maxLength: 300,
   },
-  userId: ObjectId,
+  userId: mongoose.ObjectId,
 });
 
 const WeightEntry = mongoose.model('Weight', weightEntrySchema);
@@ -48,8 +48,4 @@ const validateWeightEntry = async (user) => {
 
 // NOTE: Mongoose and Joi schemas are subtly different
 // EX: Mongoose password is longer since it will be encrypted, Joi expects an unencrypted password
-
-module.exports = {
-  WeightEntry,
-  validate: validateWeightEntry,
-};
+export { WeightEntry, validateWeightEntry as validate };

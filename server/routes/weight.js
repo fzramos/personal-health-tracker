@@ -1,30 +1,27 @@
 import express from 'express';
 const router = express.Router();
-import { WeightEntry, validate } from '../models/weightEntry';
+import { WeightEntry, validate } from '../models/weightEntry.js';
+import mongoose from 'mongoose';
+
+// console.log(new mongoose.Types.ObjectId().toHexString());
 const weight_history = [
   {
-    id: 1,
+    _id: '64302c58cad3def3f7239603',
     weight: 150,
     unit: 'pounds',
-    subject: 'Same',
-    weigh_datetime: '2023-03-25T12:00:00Z',
+    subject: 'Sam',
+    weightDate: '2023-03-25',
     note: 'Feeling good today',
-    user: {
-      id: 1,
-      name: 'reynolds_family',
-    },
+    userId: '64302c58cad3def3f7239600',
   },
   {
-    id: 2,
+    _id: '64302c678be165110cce1959',
     weight: 155,
     unit: 'pounds',
     subject: 'Max',
-    weigh_datetime: '2023-03-25T12:00:00Z',
+    weightDate: '2023-03-25T12:00:00Z',
     note: 'Feeling good today',
-    user: {
-      id: 1,
-      name: 'reynolds_family',
-    },
+    userId: '64302c58cad3def3f7239600',
   },
 ];
 
@@ -40,7 +37,18 @@ router.get('/', (req, res) => {
   res.send(weight_history);
 });
 
+router.get('/:id', (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(400).send('Invalid ID');
+  }
+  const weightEntry = weight_history.find((elem) => elem._id === req.params.id);
+  if (!weightEntry) {
+    return res.status(404).send('Given ID does not exist');
+  }
+
+  return res.send(weightEntry);
+});
+
 // TODO: In post route, make sure given subject is assigned to that user
 // TODO: IF no date given, just use todays date
-// TODO: /:id Needs middleware to validate the objectId
 export default router;
