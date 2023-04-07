@@ -8,6 +8,8 @@ const app = express();
 
 import logging from './startup/logging.js';
 logging();
+import db from './startup/db.js';
+db();
 import routes from './startup/routes.js';
 routes(app);
 import validation from './startup/validation.js';

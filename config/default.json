@@ -1,5 +1,7 @@
 {
   "name": "Private Health Tracker - DEV",
-  "db": "",
-  "jwtPrivateKey": ""
+  "mongoUri": "",
+  "jwtPrivateKey": "",
+  "db": "healthTracker",
+  "tester": ""
 }

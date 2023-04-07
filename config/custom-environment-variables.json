@@ -1,4 +1,4 @@
 {
   "jwtPrivateKey": "HT_jwtPrivateKey",
-  "db": "HT_db"
+  "mongoUri": "HT_mongoURI"
 }
