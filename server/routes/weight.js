@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-
+import { WeightEntry, validate } from '../models/weightEntry';
 const weight_history = [
   {
     id: 1,
@@ -40,4 +40,7 @@ router.get('/', (req, res) => {
   res.send(weight_history);
 });
 
+// TODO: In post route, make sure given subject is assigned to that user
+// TODO: IF no date given, just use todays date
+// TODO: /:id Needs middleware to validate the objectId
 export default router;

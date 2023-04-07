@@ -10,6 +10,8 @@ import logging from './startup/logging.js';
 logging();
 import routes from './startup/routes.js';
 routes(app);
+import validation from './startup/validation.js';
+validation();
 
 app.get('/', (req, res) => {
   res.send('Hello world');
