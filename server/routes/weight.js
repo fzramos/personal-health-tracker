@@ -2,6 +2,7 @@ import express from 'express';
 const router = express.Router();
 import { WeightEntry, validate } from '../models/weightEntry.js';
 import mongoose from 'mongoose';
+import validateObjectId from '../middleware/validateObjectId.js';
 
 // console.log(new mongoose.Types.ObjectId().toHexString());
 const weight_history = [
@@ -37,11 +38,18 @@ router.get('/', (req, res) => {
   res.send(weight_history);
 });
 
-router.get('/:id', (req, res) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-    return res.status(400).send('Invalid ID');
-  }
+router.get('/:id', validateObjectId, (req, res) => {
   const weightEntry = weight_history.find((elem) => elem._id === req.params.id);
+  if (!weightEntry) {
+    return res.status(404).send('Given ID does not exist');
+  }
+
+  return res.send(weightEntry);
+});
+
+router.delete('/:id', validateObjectId, (req, res) => {
+  const weightEntry = weight_history.find((elem) => elem._id === req.params.id);
+  // TODO: WILL USE FIND BY ID AND DELETE HERE once MongoDB connected
   if (!weightEntry) {
     return res.status(404).send('Given ID does not exist');
   }
