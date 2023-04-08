@@ -45,4 +45,24 @@ describe('/api/weight', () => {
       ).toBeTruthy(); // body should have some value that looks like this
     });
   });
+  describe('GET /:id', () => {
+    it('should return weight entry if valid entry ObjectId passed', async () => {
+      const weightEntry = new WeightEntry({
+        weight: 150,
+        unit: 'pounds',
+        subject: 'Sam',
+        weightDate: '2023-03-25',
+        note: 'Feeling good today',
+        userId: new mongoose.Types.ObjectId().toHexString(),
+      });
+      const weightEntryId = weightEntry._id.toHexString();
+      await weightEntry.save();
+
+      const res = await request(server).get(`/api/weight/${weightEntryId}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toBeDefined();
+      expect(res.body._id).toBe(weightEntryId);
+    });
+  });
 });

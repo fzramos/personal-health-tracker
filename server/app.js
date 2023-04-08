@@ -19,8 +19,9 @@ app.get('/', (req, res) => {
   res.send('Hello world');
 });
 
-const PORT = process.env.PORT || 3000;
+let port = process.env.PORT || 3000;
+if (process.env.NODE_ENV === 'test') port = 0;
 
-const server = app.listen(PORT, () => winston.info(`Server listening...`));
+const server = app.listen(port, () => winston.info(`Server listening...`));
 
 export default server;
