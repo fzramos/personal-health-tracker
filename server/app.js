@@ -21,4 +21,6 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => winston.info(`Server listening...`));
+const server = app.listen(PORT, () => winston.info(`Server listening...`));
+
+export default server;

@@ -4,9 +4,11 @@ import Joi from 'joi';
 // Mongoose will limit what can be uploaded to MongoDB
 // Last line of data quality defense
 const subjectSchema = new mongoose.Schema({
-  subject: String,
-  minLength: 1,
-  maxLength: 100,
+  subject: {
+    type: String,
+    minLength: 1,
+    maxLength: 100,
+  },
 });
 
 const userSchema = new mongoose.Schema({
