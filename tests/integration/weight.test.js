@@ -46,7 +46,21 @@ describe('/api/weight', () => {
     });
   });
   describe('GET /:id', () => {
-    it('should return weight entry if valid entry ObjectId passed', async () => {
+    it('should return 404 error if an invalid ObjectId is passed', async () => {
+      const res = await request(server).get('/api/weight/a');
+
+      expect(res.status).toBe(404);
+    });
+
+    it('should return 404 error if an ObjectId is passed that is not in the weight entry collection', async () => {
+      const randomObjectId = new mongoose.Types.ObjectId().toHexString();
+
+      const res = await request(server).get(`/api/weight/${randomObjectId}`);
+
+      expect(res.status).toBe(404);
+    });
+
+    it('should return weight entry if valid entry ObjectId is passed', async () => {
       const weightEntry = new WeightEntry({
         weight: 150,
         unit: 'pounds',
@@ -59,6 +73,61 @@ describe('/api/weight', () => {
       await weightEntry.save();
 
       const res = await request(server).get(`/api/weight/${weightEntryId}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body).toBeDefined();
+      expect(res.body._id).toBe(weightEntryId);
+    });
+  });
+  describe('DELETE /:id', () => {
+    it('should return 404 error if an invalid ObjectId is passed', async () => {
+      const res = await request(server).delete('/api/weight/a');
+
+      expect(res.status).toBe(404);
+    });
+
+    it('should return 404 error if an ObjectId is passed that is not in the weight entry collection', async () => {
+      const randomObjectId = new mongoose.Types.ObjectId().toHexString();
+
+      const res = await request(server).delete(`/api/weight/${randomObjectId}`);
+
+      expect(res.status).toBe(404);
+    });
+
+    it('should delete weight entry if valid entry ObjectId is passed', async () => {
+      const weightEntry = new WeightEntry({
+        weight: 150,
+        unit: 'pounds',
+        subject: 'Sam',
+        weightDate: '2023-03-25',
+        note: 'Feeling good today',
+        userId: new mongoose.Types.ObjectId().toHexString(),
+      });
+      const weightEntryId = weightEntry._id.toHexString();
+      await weightEntry.save();
+
+      const res = await request(server).delete(`/api/weight/${weightEntryId}`);
+
+      const removedWeightEntry = await WeightEntry.findById(weightEntryId);
+      expect(removedWeightEntry).not.toBeTruthy;
+      // expect(res.status).toBe(200);
+      // expect(res.body).toBeDefined();
+      // expect(res.body._id).toBe(weightEntryId);
+    });
+
+    it('should return the deleted weight entry if valid ObjectId is passed', async () => {
+      const weightEntry = new WeightEntry({
+        weight: 150,
+        unit: 'pounds',
+        subject: 'Sam',
+        weightDate: '2023-03-25',
+        note: 'Feeling good today',
+        userId: new mongoose.Types.ObjectId().toHexString(),
+      });
+      const weightEntryId = weightEntry._id.toHexString();
+      await weightEntry.save();
+
+      const res = await request(server).delete(`/api/weight/${weightEntryId}`);
 
       expect(res.status).toBe(200);
       expect(res.body).toBeDefined();
