@@ -23,7 +23,8 @@ const weightEntrySchema = new mongoose.Schema({
   },
   weightDate: {
     type: Date,
-    required: true,
+    // required: true,
+    default: () => new Date(new Date().setHours(0, 0, 0, 0)),
   },
   note: {
     type: String,
@@ -39,8 +40,8 @@ const validateWeightEntry = (user) => {
     weight: Joi.number().min(0).max(1000).required(),
     unit: Joi.string().valid('pounds', 'kilogram'),
     subject: Joi.string().min(1).max(100).required(),
-    weightDate: Joi.date(),
-    note: Joi.string().max(300),
+    weightDate: Joi.date().optional(),
+    note: Joi.string().max(300).optional(),
     userId: Joi.objectId(),
   });
   return schema.validateAsync(user);

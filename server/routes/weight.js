@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import express from 'express';
 const router = express.Router();
 import { WeightEntry, validate } from '../models/weightEntry.js';
@@ -5,36 +6,6 @@ import mongoose from 'mongoose';
 import createDebug from 'debug';
 const debug = createDebug('app:weight_route');
 import validateObjectId from '../middleware/validateObjectId.js';
-
-// console.log(new mongoose.Types.ObjectId().toHexString());
-// const weight_history = [
-//   {
-//     _id: '64302c58cad3def3f7239603',
-//     weight: 150,
-//     unit: 'pounds',
-//     subject: 'Sam',
-//     weightDate: '2023-03-25',
-//     note: 'Feeling good today',
-//     userId: '64302c58cad3def3f7239600',
-//   },
-//   {
-//     _id: '64302c678be165110cce1959',
-//     weight: 155,
-//     unit: 'pounds',
-//     subject: 'Max',
-//     weightDate: '2023-03-25T12:00:00Z',
-//     note: 'Feeling good today',
-//     userId: '64302c58cad3def3f7239600',
-//   },
-// ];
-
-// const users = [
-//   {
-//     id: 1,
-//     name: 'reynolds_family',
-//     subjects: ['Sam', 'Max'],
-//   },
-// ];
 
 router.get('/', async (req, res) => {
   const weightEntries = await WeightEntry.find({});
@@ -68,8 +39,32 @@ router.post('/', async (req, res) => {
   } catch (error) {
     return res.status(400).send(error.details[0].message);
   }
+  debug('Passedvalidtion');
 
-  res.send('successful');
+  // using lodash here so user can't sneak in any additional object parameters
+  const weightEntry = new WeightEntry(
+    _.pick(req.body, [
+      'weight',
+      'unit',
+      'subject',
+      'weightDate',
+      'note',
+      'userId',
+    ])
+  );
+  await weightEntry.save(0);
+
+  res.send(
+    _.pick(weightEntry, [
+      '_id',
+      'weight',
+      'unit',
+      'subject',
+      'weightDate',
+      'note',
+      'userId',
+    ])
+  );
 });
 
 // TODO: In post route, make sure given subject is assigned to that user

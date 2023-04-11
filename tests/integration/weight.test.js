@@ -134,6 +134,7 @@ describe('/api/weight', () => {
       expect(res.body._id).toBe(weightEntryId);
     });
   });
+
   describe('POST /', () => {
     let weight, unit, subject, weightDate, note, userId;
     // all of these will try to post some
@@ -167,6 +168,33 @@ describe('/api/weight', () => {
       const res = await exec();
 
       expect(res.status).toBe(400);
+    });
+
+    it('should save given weight entry if the request is valid', async () => {
+      await exec();
+
+      const uploadedWeightEntry = await WeightEntry.find({
+        weight,
+        unit,
+        subject,
+        weightDate,
+        note,
+        userId,
+      });
+
+      expect(uploadedWeightEntry).not.toHaveLength(0);
+    });
+
+    it('should set weightDate to be current date if none is passed', async () => {
+      const res = await request(server).post('/api/weight').send({
+        weight,
+        unit,
+        subject,
+        note,
+        userId,
+      });
+
+      expect(res.body.weightDate).toBeDefined();
     });
   });
 });
