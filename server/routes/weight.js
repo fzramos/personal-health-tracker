@@ -2,6 +2,7 @@ import _ from 'lodash';
 import express from 'express';
 const router = express.Router();
 import { WeightEntry, validate } from '../models/weightEntry.js';
+import { User } from '../models/user.js';
 import mongoose from 'mongoose';
 import createDebug from 'debug';
 const debug = createDebug('app:weight_route');
@@ -39,8 +40,15 @@ router.post('/', async (req, res) => {
   } catch (error) {
     return res.status(400).send(error.details[0].message);
   }
-  debug('Passedvalidtion');
 
+  const user = await User.findById(req.body.userId);
+  if (!user) {
+    return res.status(400).send('Given user id not found in database');
+  } else if (!_.some(user.subjects, { subject: req.body.subject })) {
+    return res
+      .status(400)
+      .send('Given subject not assigned to the specified user');
+  }
   // using lodash here so user can't sneak in any additional object parameters
   const weightEntry = new WeightEntry(
     _.pick(req.body, [
@@ -52,7 +60,7 @@ router.post('/', async (req, res) => {
       'userId',
     ])
   );
-  await weightEntry.save(0);
+  await weightEntry.save();
 
   res.send(
     _.pick(weightEntry, [

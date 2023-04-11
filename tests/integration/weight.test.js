@@ -144,8 +144,21 @@ describe('/api/weight', () => {
       subject: 'Sam',
       weightDate: '2023-03-25',
       note: 'Feeling good today',
-      userId: new mongoose.Types.ObjectId().toHexString(),
     };
+
+    beforeAll(async () => {
+      const user = new User({
+        name: 'reynolds_family',
+        password: '12345',
+        subjects: [
+          {
+            subject: 'Sam',
+          },
+        ],
+      });
+      await user.save();
+      weightEntryValues.userId = user._id;
+    });
 
     function exec() {
       return request(server).post('/api/weight').send({
@@ -161,6 +174,9 @@ describe('/api/weight', () => {
     beforeEach(() => {
       ({ weight, unit, subject, weightDate, note, userId } = weightEntryValues);
     });
+    afterAll(async () => {
+      await User.deleteMany({});
+    });
 
     it('should return 400 code if a non-number weight is passed', async () => {
       weight = null;
@@ -168,6 +184,33 @@ describe('/api/weight', () => {
       const res = await exec();
 
       expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if the request userId parameter is not a valid Object Id', async () => {
+      userId = 'a';
+
+      const res = await exec();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 if the given request subject is not assigned to the given userId', async () => {
+      subject = 'a';
+
+      const res = await exec();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should set unit to pounds if request does not include the parameter', async () => {
+      const res = await request(server).post('/api/weight').send({
+        weight,
+        subject,
+        note,
+        userId,
+      });
+
+      expect(res.body.unit).toBe('pounds');
     });
 
     it('should save given weight entry if the request is valid', async () => {
