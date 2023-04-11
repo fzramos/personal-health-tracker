@@ -34,16 +34,16 @@ const weightEntrySchema = new mongoose.Schema({
 
 const WeightEntry = mongoose.model('Weight', weightEntrySchema);
 
-const validateWeightEntry = async (user) => {
+const validateWeightEntry = (user) => {
   const schema = Joi.object({
     weight: Joi.number().min(0).max(1000).required(),
-    unit: Joi.string().valid(['pounds', 'kilogram']),
+    unit: Joi.string().valid('pounds', 'kilogram'),
     subject: Joi.string().min(1).max(100).required(),
     weightDate: Joi.date(),
     note: Joi.string().max(300),
     userId: Joi.objectId(),
   });
-  return await schema.validateAsync(user);
+  return schema.validateAsync(user);
 };
 
 // NOTE: Mongoose and Joi schemas are subtly different

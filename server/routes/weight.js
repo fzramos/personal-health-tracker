@@ -2,6 +2,8 @@ import express from 'express';
 const router = express.Router();
 import { WeightEntry, validate } from '../models/weightEntry.js';
 import mongoose from 'mongoose';
+import createDebug from 'debug';
+const debug = createDebug('app:weight_route');
 import validateObjectId from '../middleware/validateObjectId.js';
 
 // console.log(new mongoose.Types.ObjectId().toHexString());
@@ -58,6 +60,16 @@ router.delete('/:id', validateObjectId, async (req, res) => {
   }
 
   return res.send(weightEntry);
+});
+
+router.post('/', async (req, res) => {
+  try {
+    await validate(req.body);
+  } catch (error) {
+    return res.status(400).send(error.details[0].message);
+  }
+
+  res.send('successful');
 });
 
 // TODO: In post route, make sure given subject is assigned to that user

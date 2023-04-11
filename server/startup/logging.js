@@ -1,5 +1,5 @@
 import winston from 'winston';
-import eae from 'express-async-errors';
+import 'express-async-errors';
 // the above package wraps all ASYNC routes with a try/catch block
 // so if an async route encounters an error, it will move on to the error middleware
 // this import isn't used here but it needs to be imported somewhere early in the script
