@@ -51,8 +51,4 @@ const validateUser = async (user) => {
 
 // NOTE: Mongoose and Joi schemas are subtly different
 // EX: Mongoose password is longer since it will be encrypted, Joi expects an unencrypted password
-
-module.exports = {
-  User,
-  validate: validateUser,
-};
+export { User, validateUser as validate };
