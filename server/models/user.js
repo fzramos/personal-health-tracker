@@ -3,13 +3,13 @@ import Joi from 'joi';
 
 // Mongoose will limit what can be uploaded to MongoDB
 // Last line of data quality defense
-const subjectSchema = new mongoose.Schema({
-  subject: {
-    type: String,
-    minLength: 1,
-    maxLength: 100,
-  },
-});
+// const subjectSchema = new mongoose.Schema({
+//   subject: {
+//     type: String,
+//     minLength: 1,
+//     maxLength: 100,
+//   },
+// });
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -31,7 +31,13 @@ const userSchema = new mongoose.Schema({
     minLength: 5,
     maxLength: 1120,
   },
-  subjects: [subjectSchema],
+  subjects: [
+    {
+      type: String,
+      minLength: 1,
+      maxLength: 100,
+    },
+  ],
 });
 
 const User = mongoose.model('User', userSchema);
@@ -41,7 +47,7 @@ const User = mongoose.model('User', userSchema);
 const validateUser = async (user) => {
   const schema = Joi.object({
     name: Joi.string().min(1).max(100).required(),
-    email: Joi.string().min(3).max(255),
+    email: Joi.string().email().min(3).max(255),
     password: Joi.string().min(5).max(500).required(),
     repeat_password: Joi.ref('password'),
     subjects: Joi.array().items(Joi.string().min(1), max(100)).required(),

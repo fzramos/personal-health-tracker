@@ -7,7 +7,6 @@ let server;
 describe('/api/weight', () => {
   beforeEach(async () => {
     const { default: myServer } = await import('../../server/app.js');
-    // server = require('../../index');
     server = myServer;
   });
   afterEach(async () => {
@@ -154,11 +153,7 @@ describe('/api/weight', () => {
       const user = new User({
         name: 'reynolds_family',
         password: '12345',
-        subjects: [
-          {
-            subject: 'Sam',
-          },
-        ],
+        subjects: ['Sam'],
       });
       await user.save();
       weightEntryValues.userId = user._id;
@@ -261,11 +256,7 @@ describe('/api/weight', () => {
       const user = new User({
         name: 'reynolds_family',
         password: '12345',
-        subjects: [
-          {
-            subject: 'Sam',
-          },
-        ],
+        subjects: ['Sam'],
       });
       await user.save();
       weightEntryValues.userId = user._id;

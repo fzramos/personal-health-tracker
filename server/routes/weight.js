@@ -42,7 +42,7 @@ router.post('/', async (req, res) => {
   const user = await User.findById(req.body.userId);
   if (!user) {
     return res.status(400).send('Given user id not found in database');
-  } else if (!_.some(user.subjects, { subject: req.body.subject })) {
+  } else if (!user.subjects.includes(req.body.subject)) {
     return res
       .status(400)
       .send('Given subject not assigned to the specified user');
@@ -73,51 +73,6 @@ router.post('/', async (req, res) => {
   );
 });
 
-// router.put('/:id', validateObjectId, async (req, res) => {
-
-//   try {
-//     await validate(req.body);
-//   } catch (error) {
-//     return res.status(400).send(error.details[0].message);
-//   }
-
-//   const user = await User.findById(req.body.userId);
-//   if (!user) {
-//     return res.status(400).send('Given user id not found in database');
-//   } else if (!_.some(user.subjects, { subject: req.body.subject })) {
-//     return res
-//       .status(400)
-//       .send('Given subject not assigned to the specified user');
-//   }
-
-//   const weightEntry = await WeightEntry.findByIdAndUpdate(
-//     req.params.id,
-//     {
-//       $set: _.pick(req.body, [
-//         'weight',
-//         'unit',
-//         'subject',
-//         'weightDate',
-//         'note',
-//         'userId',
-//       ]),
-//     },
-//     { new: true }
-//   );
-
-//   res.send(
-//     _.pick(weightEntry, [
-//       '_id',
-//       'weight',
-//       'unit',
-//       'subject',
-//       'weightDate',
-//       'note',
-//       'userId',
-//     ])
-//   );
-// });
-
 router.put('/:id', validateObjectId, async (req, res) => {
   try {
     await validate(req.body);
@@ -128,12 +83,11 @@ router.put('/:id', validateObjectId, async (req, res) => {
   const user = await User.findById(req.body.userId);
   if (!user) {
     return res.status(400).send('Given user id not found in database');
-  } else if (!_.some(user.subjects, { subject: req.body.subject })) {
+  } else if (!user.subjects.includes(req.body.subject)) {
     return res
       .status(400)
       .send('Given subject not assigned to the specified user');
   }
-
   const weightEntry = await WeightEntry.findByIdAndUpdate(
     req.params.id,
     {
