@@ -8,8 +8,9 @@ export default function (req, res, next) {
   }
 
   try {
-    const decoded = jwt.verify(token, config.get('jwtPrivateKey'));
-    // putting the decoded JWT details in the req so endpoints can access it without querying User collection
+    const decoded = jwt.verify(token, process.env.HT_jwtPrivateKey);
+    // putting the decoded JWT details in the req
+    // so endpoints can access it without querying User collection
     req.user = decoded;
 
     next();

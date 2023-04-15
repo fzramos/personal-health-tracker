@@ -30,7 +30,8 @@ const weightEntrySchema = new mongoose.Schema({
     type: String,
     maxLength: 300,
   },
-  userId: mongoose.ObjectId,
+  userId: mongoose.Schema.Types.ObjectId,
+  // mongoose.ObjectId,
 });
 
 const WeightEntry = mongoose.model('Weight', weightEntrySchema);
@@ -42,7 +43,6 @@ const validateWeightEntry = (user) => {
     subject: Joi.string().min(1).max(100).required(),
     weightDate: Joi.date().optional(),
     note: Joi.string().max(300).optional(),
-    userId: Joi.objectId(),
   });
   return schema.validateAsync(user);
 };

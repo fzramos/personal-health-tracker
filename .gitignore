@@ -12,6 +12,8 @@
 # misc
 *.log
 .env
+.env.development
+.env.test
 .DS_Store
 .env.local
 .env.development.local

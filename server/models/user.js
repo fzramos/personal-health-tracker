@@ -41,7 +41,7 @@ userSchema.methods.generateAuthToken = function () {
       _id: this._id,
       subjects: this.subjects,
     },
-    config.get('jwtPrivateKey')
+    process.env.HT_jwtPrivateKey
   );
 };
 const User = mongoose.model('User', userSchema);

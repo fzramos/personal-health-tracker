@@ -1,6 +1,8 @@
 import request from 'supertest';
 import { WeightEntry } from '../../server/models/weightEntry.js';
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+import config from 'config';
 import { User } from '../../server/models/user.js';
 let server;
 
@@ -28,8 +30,13 @@ describe('/api/weight', () => {
 
       expect(res.status).toBe(401);
     });
-    it('should return all weight entries if a valid JWT is included', async () => {
-      const userId = new mongoose.Types.ObjectId().toHexString();
+    it("should return all weight entries related to the user's id if a valid JWT is included", async () => {
+      // const userId = new mongoose.Types.ObjectId().toHexString();
+      const decoded = jwt.verify(token, process.env.HT_jwtPrivateKey);
+      const userId = decoded._id;
+      console.log(userId);
+      // Inserting 1 record with the ID and 1 without to confirm were not
+      // getting everything, just the req user's data
       await WeightEntry.collection.insertMany([
         {
           weight: 150,
@@ -45,7 +52,7 @@ describe('/api/weight', () => {
           subject: 'Max',
           weightDate: '2023-03-25T12:00:00Z',
           note: 'Feeling good today',
-          userId: userId,
+          userId: new mongoose.Types.ObjectId().toHexString(),
         },
       ]);
 
@@ -53,7 +60,7 @@ describe('/api/weight', () => {
         .get('/api/weight')
         .set('x-auth-token', token);
 
-      expect(res.body.length).toBe(2);
+      expect(res.body.length).toBe(1);
       expect(
         res.body.some((we) => we.note === 'Feeling good today')
       ).toBeTruthy(); // body should have some value that looks like this

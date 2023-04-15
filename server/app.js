@@ -1,5 +1,5 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
+import startupConfig from './startup/config.js';
+startupConfig();
 import createDebug from 'debug';
 const debug = createDebug('app:entry_point');
 import winston from 'winston';

@@ -1,9 +1,7 @@
 import { User, validate } from '../models/user.js';
 import express from 'express';
 const router = express.Router();
-import winston from 'winston';
 import _ from 'lodash';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 router.post('/register', async (req, res) => {

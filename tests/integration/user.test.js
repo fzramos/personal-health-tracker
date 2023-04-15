@@ -91,8 +91,8 @@ describe('/api/user', () => {
       const token = res.header['x-auth-token'];
 
       expect(res.header).toHaveProperty('x-auth-token');
-      const decoded = jwt.verify(token, config.get('jwtPrivateKey'));
-      expect(jwt.verify(token, config.get('jwtPrivateKey'))).toMatchObject(
+      const decoded = jwt.verify(token, process.env.HT_jwtPrivateKey);
+      expect(jwt.verify(token, process.env.HT_jwtPrivateKey)).toMatchObject(
         _.pick(res.body, ['_id', 'subjects'])
       );
     });
