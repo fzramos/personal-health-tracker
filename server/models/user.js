@@ -1,15 +1,10 @@
 import mongoose from 'mongoose';
 import Joi from 'joi';
+import jwt from 'jsonwebtoken';
+import config from 'config';
 
 // Mongoose will limit what can be uploaded to MongoDB
 // Last line of data quality defense
-// const subjectSchema = new mongoose.Schema({
-//   subject: {
-//     type: String,
-//     minLength: 1,
-//     maxLength: 100,
-//   },
-// });
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -40,6 +35,15 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
+userSchema.methods.generateAuthToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      subjects: this.subjects,
+    },
+    config.get('jwtPrivateKey')
+  );
+};
 const User = mongoose.model('User', userSchema);
 
 // Joi will be used to validate API request data
@@ -54,17 +58,6 @@ const validateUser = async (user) => {
   });
   return await schema.validateAsync(user);
 };
-
-// const test = async () => {
-//   await validateUser({
-//     name: 'reynolds_family',
-//     email: 'abc@d.com',
-//     password: 'password',
-//     repeat_password: 'password',
-//     subjects: ['Frank'],
-//   });
-// };
-// test();
 
 // NOTE: Mongoose and Joi schemas are subtly different
 // EX: Mongoose password is longer since it will be encrypted, Joi expects an unencrypted password

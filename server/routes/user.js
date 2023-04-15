@@ -3,6 +3,8 @@ import express from 'express';
 const router = express.Router();
 import winston from 'winston';
 import _ from 'lodash';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 router.post('/register', async (req, res) => {
   try {
@@ -17,27 +19,26 @@ router.post('/register', async (req, res) => {
     return res.status(400).send('Given user name already exists');
   }
 
-  const user = new User(
-    _.pick(req.body, [
-      'name',
-      'email',
-      'password',
-      'repeat_password',
-      'subjects',
-    ])
-  );
+  const userObj = _.pick(req.body, ['name', 'email', 'subjects']);
+  const salt = await bcrypt.genSalt(10);
+  userObj.password = await bcrypt.hash(req.body.password, salt);
+
+  const user = new User(userObj);
   await user.save();
 
-  res.send(
-    _.pick(user, [
-      '_id',
-      'name',
-      'email',
-      'password',
-      'repeat_password',
-      'subjects',
-    ])
-  );
+  const token = user.generateAuthToken();
+  res
+    .header('x-auth-token', token)
+    .send(
+      _.pick(user, [
+        '_id',
+        'name',
+        'email',
+        'password',
+        'repeat_password',
+        'subjects',
+      ])
+    );
 });
 
 export default router;

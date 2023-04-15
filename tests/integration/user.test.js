@@ -1,5 +1,8 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+import config from 'config';
+import _ from 'lodash';
 import { User } from '../../server/models/user.js';
 let server;
 
@@ -79,10 +82,19 @@ describe('/api/user', () => {
 
       const res = await exec();
 
-      console.log(res.text);
-
       expect(res.status).toBe(400);
       expect(res.text.toString()).toContain('repeat_password');
+    });
+
+    it("should return a JWT in the response header with the user's details", async () => {
+      const res = await exec();
+      const token = res.header['x-auth-token'];
+
+      expect(res.header).toHaveProperty('x-auth-token');
+      const decoded = jwt.verify(token, config.get('jwtPrivateKey'));
+      expect(jwt.verify(token, config.get('jwtPrivateKey'))).toMatchObject(
+        _.pick(res.body, ['_id', 'subjects'])
+      );
     });
   });
 });

@@ -1,4 +1,5 @@
 {
   "name": "Private Health Tracker - TEST",
-  "db": "healthTrackerTest"
+  "db": "healthTrackerTest",
+  "jwtPrivateKey": "123"
 }
