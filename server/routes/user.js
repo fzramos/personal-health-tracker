@@ -17,11 +17,6 @@ router.post('/register', async (req, res) => {
     return res.status(400).send('Given user name already exists');
   }
 
-  // Is this needed or is it taken care of by Joi (or can I take care of it with Joi?)
-  if (req.body.password !== req.body.repeat_password) {
-    return res.status(400).send('password and repeat_password must match');
-  }
-
   const user = new User(
     _.pick(req.body, [
       'name',

@@ -56,5 +56,33 @@ describe('/api/user', () => {
 
       expect(res.status).toBe(400);
     });
+
+    it('should return 400 status if user already exists', async () => {
+      await exec();
+      // running it twice to see if the same user can be uploaded again
+      const res = await exec();
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 400 status if user name is not in the request', async () => {
+      delete userProps.name;
+
+      const res = await exec();
+
+      expect(res.status).toBe(400);
+      expect(res.text.toString()).toContain('name');
+    });
+    it('should return 400 status if repeat_password property does not equal password', async () => {
+      userProps.password = 'goodPass123!';
+      userProps.repeat_password = 'badPass000!';
+
+      const res = await exec();
+
+      console.log(res.text);
+
+      expect(res.status).toBe(400);
+      expect(res.text.toString()).toContain('repeat_password');
+    });
   });
 });
