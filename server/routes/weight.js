@@ -6,8 +6,9 @@ import { User } from '../models/user.js';
 import createDebug from 'debug';
 const debug = createDebug('app:weight_route');
 import validateObjectId from '../middleware/validateObjectId.js';
+import auth from '../middleware/auth.js';
 
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
   const weightEntries = await WeightEntry.find({});
   res.send(weightEntries);
 });

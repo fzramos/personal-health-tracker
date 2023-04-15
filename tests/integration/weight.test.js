@@ -18,7 +18,17 @@ describe('/api/weight', () => {
   });
 
   describe('GET /', () => {
-    it('should return all weight entries', async () => {
+    let token;
+    beforeEach(() => {
+      token = new User().generateAuthToken();
+    });
+
+    it("should return 401 status if the request doesn't have a valid JWT", async () => {
+      const res = await request(server).get('/api/weight');
+
+      expect(res.status).toBe(401);
+    });
+    it('should return all weight entries if a valid JWT is included', async () => {
       const userId = new mongoose.Types.ObjectId().toHexString();
       await WeightEntry.collection.insertMany([
         {
@@ -39,7 +49,10 @@ describe('/api/weight', () => {
         },
       ]);
 
-      const res = await request(server).get('/api/weight');
+      const res = await request(server)
+        .get('/api/weight')
+        .set('x-auth-token', token);
+
       expect(res.body.length).toBe(2);
       expect(
         res.body.some((we) => we.note === 'Feeling good today')

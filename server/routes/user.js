@@ -41,4 +41,7 @@ router.post('/register', async (req, res) => {
     );
 });
 
+// to do: need route to add so a user can add a subject to their account
+router.post('/addSubject', async () => {});
+
 export default router;
