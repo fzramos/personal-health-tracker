@@ -50,10 +50,21 @@ const validateUser = async (user) => {
     email: Joi.string().email().min(3).max(255),
     password: Joi.string().min(5).max(500).required(),
     repeat_password: Joi.ref('password'),
-    subjects: Joi.array().items(Joi.string().min(1), max(100)).required(),
+    subjects: Joi.array().items(Joi.string().min(1).max(100)).required(),
   });
   return await schema.validateAsync(user);
 };
+
+// const test = async () => {
+//   await validateUser({
+//     name: 'reynolds_family',
+//     email: 'abc@d.com',
+//     password: 'password',
+//     repeat_password: 'password',
+//     subjects: ['Frank'],
+//   });
+// };
+// test();
 
 // NOTE: Mongoose and Joi schemas are subtly different
 // EX: Mongoose password is longer since it will be encrypted, Joi expects an unencrypted password

@@ -13,7 +13,12 @@ export default function () {
       ),
     })
   );
-  winston.add(new winston.transports.File({ filename: 'logfile.log' }));
+  winston.add(
+    new winston.transports.File({
+      filename: 'logfile.log',
+      handleExceptions: true,
+    })
+  );
 
   winston.exceptions.handle([
     new winston.transports.Console({
@@ -22,6 +27,9 @@ export default function () {
         winston.format.simple()
       ),
     }),
-    new winston.transports.File({ filename: 'uncaughtExceptions.log' }),
+    new winston.transports.File({
+      filename: 'uncaughtExceptions.log',
+      handleExceptions: true,
+    }),
   ]);
 }
