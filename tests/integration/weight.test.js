@@ -30,11 +30,12 @@ describe('/api/weight', () => {
 
       expect(res.status).toBe(401);
     });
+
     it("should return all weight entries related to the user's id if a valid JWT is included", async () => {
       // const userId = new mongoose.Types.ObjectId().toHexString();
       const decoded = jwt.verify(token, process.env.HT_jwtPrivateKey);
       const userId = decoded._id;
-      console.log(userId);
+
       // Inserting 1 record with the ID and 1 without to confirm were not
       // getting everything, just the req user's data
       await WeightEntry.collection.insertMany([
@@ -44,7 +45,7 @@ describe('/api/weight', () => {
           subject: 'Sam',
           weightDate: '2023-03-25',
           note: 'Feeling good today',
-          userId: userId,
+          userId: new mongoose.Types.ObjectId(userId),
         },
         {
           weight: 155,
@@ -52,7 +53,7 @@ describe('/api/weight', () => {
           subject: 'Max',
           weightDate: '2023-03-25T12:00:00Z',
           note: 'Feeling good today',
-          userId: new mongoose.Types.ObjectId().toHexString(),
+          userId: new mongoose.Types.ObjectId(),
         },
       ]);
 
@@ -68,8 +69,23 @@ describe('/api/weight', () => {
   });
 
   describe('GET /:id', () => {
+    let token;
+    beforeEach(() => {
+      token = new User().generateAuthToken();
+    });
+
+    it("should return 401 status if the request doesn't have a valid JWT", async () => {
+      const randomObjectId = new mongoose.Types.ObjectId().toHexString();
+
+      const res = await request(server).get(`/api/weight/${randomObjectId}`);
+
+      expect(res.status).toBe(401);
+    });
+
     it('should return 400 error if an invalid ObjectId is passed', async () => {
-      const res = await request(server).get('/api/weight/a');
+      const res = await request(server)
+        .get('/api/weight/a')
+        .set('x-auth-token', token);
 
       expect(res.status).toBe(400);
     });
@@ -77,12 +93,14 @@ describe('/api/weight', () => {
     it('should return 400 error if an ObjectId is passed that is not in the weight entry collection', async () => {
       const randomObjectId = new mongoose.Types.ObjectId().toHexString();
 
-      const res = await request(server).get(`/api/weight/${randomObjectId}`);
+      const res = await request(server)
+        .get(`/api/weight/${randomObjectId}`)
+        .set('x-auth-token', token);
 
       expect(res.status).toBe(400);
     });
 
-    it('should return weight entry if valid entry ObjectId is passed', async () => {
+    it('should return 400 error if the requesting userId does not match the weightEntry userId', async () => {
       const weightEntry = new WeightEntry({
         weight: 150,
         unit: 'pounds',
@@ -91,10 +109,31 @@ describe('/api/weight', () => {
         note: 'Feeling good today',
         userId: new mongoose.Types.ObjectId().toHexString(),
       });
+
+      const res = await request(server)
+        .get(`/api/weight/${weightEntry._id}`)
+        .set('x-auth-token', token);
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return weight entry if valid entry ObjectId is passed', async () => {
+      const decoded = jwt.verify(token, process.env.HT_jwtPrivateKey);
+      const userId = decoded._id;
+      const weightEntry = new WeightEntry({
+        weight: 150,
+        unit: 'pounds',
+        subject: 'Sam',
+        weightDate: '2023-03-25',
+        note: 'Feeling good today',
+        userId: userId,
+      });
       const weightEntryId = weightEntry._id.toHexString();
       await weightEntry.save();
 
-      const res = await request(server).get(`/api/weight/${weightEntryId}`);
+      const res = await request(server)
+        .get(`/api/weight/${weightEntryId}`)
+        .set('x-auth-token', token);
 
       expect(res.status).toBe(200);
       expect(res.body).toBeDefined();
@@ -103,8 +142,23 @@ describe('/api/weight', () => {
   });
 
   describe('DELETE /:id', () => {
+    let token;
+    beforeEach(() => {
+      token = new User().generateAuthToken();
+    });
+
+    it("should return 401 status if the request doesn't have a valid JWT", async () => {
+      const randomObjectId = new mongoose.Types.ObjectId().toHexString();
+
+      const res = await request(server).delete(`/api/weight/${randomObjectId}`);
+
+      expect(res.status).toBe(401);
+    });
+
     it('should return 400 error if an invalid ObjectId is passed', async () => {
-      const res = await request(server).delete('/api/weight/a');
+      const res = await request(server)
+        .delete('/api/weight/a')
+        .set('x-auth-token', token);
 
       expect(res.status).toBe(400);
     });
@@ -112,12 +166,14 @@ describe('/api/weight', () => {
     it('should return 400 error if an ObjectId is passed that is not in the weight entry collection', async () => {
       const randomObjectId = new mongoose.Types.ObjectId().toHexString();
 
-      const res = await request(server).delete(`/api/weight/${randomObjectId}`);
+      const res = await request(server)
+        .delete(`/api/weight/${randomObjectId}`)
+        .set('x-auth-token', token);
 
       expect(res.status).toBe(400);
     });
 
-    it('should delete weight entry if valid entry ObjectId is passed', async () => {
+    it('should return 400 error if the requesting userId does not match the weightEntry userId', async () => {
       const weightEntry = new WeightEntry({
         weight: 150,
         unit: 'pounds',
@@ -129,7 +185,30 @@ describe('/api/weight', () => {
       const weightEntryId = weightEntry._id.toHexString();
       await weightEntry.save();
 
-      const res = await request(server).delete(`/api/weight/${weightEntryId}`);
+      const res = await request(server)
+        .delete(`/api/weight/${weightEntryId}`)
+        .set('x-auth-token', token);
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should delete weight entry if valid entry ObjectId is passed', async () => {
+      const decoded = jwt.verify(token, process.env.HT_jwtPrivateKey);
+      const userId = decoded._id;
+      const weightEntry = new WeightEntry({
+        weight: 150,
+        unit: 'pounds',
+        subject: 'Sam',
+        weightDate: '2023-03-25',
+        note: 'Feeling good today',
+        userId: userId,
+      });
+      const weightEntryId = weightEntry._id.toHexString();
+      await weightEntry.save();
+
+      const res = await request(server)
+        .delete(`/api/weight/${weightEntryId}`)
+        .set('x-auth-token', token);
 
       const removedWeightEntry = await WeightEntry.findById(weightEntryId);
       expect(removedWeightEntry).not.toBeTruthy;
@@ -139,18 +218,22 @@ describe('/api/weight', () => {
     });
 
     it('should return the deleted weight entry if valid ObjectId is passed', async () => {
+      const decoded = jwt.verify(token, process.env.HT_jwtPrivateKey);
+      const userId = decoded._id;
       const weightEntry = new WeightEntry({
         weight: 150,
         unit: 'pounds',
         subject: 'Sam',
         weightDate: '2023-03-25',
         note: 'Feeling good today',
-        userId: new mongoose.Types.ObjectId().toHexString(),
+        userId: userId,
       });
       const weightEntryId = weightEntry._id.toHexString();
       await weightEntry.save();
 
-      const res = await request(server).delete(`/api/weight/${weightEntryId}`);
+      const res = await request(server)
+        .delete(`/api/weight/${weightEntryId}`)
+        .set('x-auth-token', token);
 
       expect(res.status).toBe(200);
       expect(res.body).toBeDefined();
@@ -159,7 +242,7 @@ describe('/api/weight', () => {
   });
 
   describe('POST /', () => {
-    let weight, unit, subject, weightDate, note, userId;
+    let weight, unit, subject, weightDate, note, userId, token;
     // all of these will try to post some
     const weightEntryValues = {
       weight: 150,
@@ -168,6 +251,7 @@ describe('/api/weight', () => {
       weightDate: '2023-03-25',
       note: 'Feeling good today',
     };
+    let tokenOrigVal;
 
     beforeAll(async () => {
       const user = new User({
@@ -176,25 +260,38 @@ describe('/api/weight', () => {
         subjects: ['Sam'],
       });
       await user.save();
+      tokenOrigVal = user.generateAuthToken();
       weightEntryValues.userId = user._id;
     });
 
     function exec() {
-      return request(server).post('/api/weight').send({
-        weight,
-        unit,
-        subject,
-        weightDate,
-        note,
-        userId,
-      });
+      return request(server)
+        .post('/api/weight')
+        .send({
+          weight,
+          unit,
+          subject,
+          weightDate,
+          note,
+        })
+        .set('x-auth-token', token);
     }
 
     beforeEach(() => {
-      ({ weight, unit, subject, weightDate, note, userId } = weightEntryValues);
+      ({ weight, unit, subject, weightDate, note } = weightEntryValues);
+      token = tokenOrigVal;
+      userId = jwt.verify(token, process.env.HT_jwtPrivateKey)._id;
     });
     afterAll(async () => {
       await User.deleteMany({});
+    });
+
+    it("should return 401 status if the request doesn't have a valid JWT", async () => {
+      token = '';
+
+      const res = await exec();
+
+      expect(res.status).toBe(401);
     });
 
     it('should return 400 code if a non-number weight is passed', async () => {
@@ -205,13 +302,13 @@ describe('/api/weight', () => {
       expect(res.status).toBe(400);
     });
 
-    it('should return 400 if the request userId parameter is not a valid Object Id', async () => {
-      userId = 'a';
+    // it('should return 400 if the request userId parameter is not a valid Object Id', async () => {
+    //   userId = 'a';
 
-      const res = await exec();
+    //   const res = await exec();
 
-      expect(res.status).toBe(400);
-    });
+    //   expect(res.status).toBe(400);
+    // });
 
     it('should return 400 if the given request subject is not assigned to the given userId', async () => {
       subject = 'a';
@@ -222,12 +319,14 @@ describe('/api/weight', () => {
     });
 
     it('should set unit to pounds if request does not include the parameter', async () => {
-      const res = await request(server).post('/api/weight').send({
-        weight,
-        subject,
-        note,
-        userId,
-      });
+      const res = await request(server)
+        .post('/api/weight')
+        .set('x-auth-token', token)
+        .send({
+          weight,
+          subject,
+          note,
+        });
 
       expect(res.body.unit).toBe('pounds');
     });
@@ -241,21 +340,21 @@ describe('/api/weight', () => {
         subject,
         weightDate,
         note,
-        userId,
       });
 
       expect(uploadedWeightEntry).not.toHaveLength(0);
     });
 
     it('should set weightDate to be current date if none is passed', async () => {
-      const res = await request(server).post('/api/weight').send({
-        weight,
-        unit,
-        subject,
-        note,
-        userId,
-      });
-
+      const res = await request(server)
+        .post('/api/weight')
+        .set('x-auth-token', token)
+        .send({
+          weight,
+          unit,
+          subject,
+          note,
+        });
       expect(res.body.weightDate).toBeDefined();
     });
   });
@@ -268,8 +367,8 @@ describe('/api/weight', () => {
       weightDate: '2023-03-25',
       note: 'Feeling good today',
     };
-    let { weight, unit, subject, weightDate, note, userId } = weightEntryValues;
-    let weightEntryId;
+    let { weight, unit, subject, weightDate, note } = weightEntryValues;
+    let weightEntryId, userId, tokenOrigVal, token;
 
     beforeAll(async () => {
       // upload a User and WeightEntry so we can modify the weight entry in this route
@@ -279,6 +378,7 @@ describe('/api/weight', () => {
         subjects: ['Sam'],
       });
       await user.save();
+      tokenOrigVal = user.generateAuthToken();
       weightEntryValues.userId = user._id;
     });
 
@@ -297,22 +397,34 @@ describe('/api/weight', () => {
 
     function exec() {
       // update weight entry posted above so "weight" property changes from 0 to 150
-      return request(server).put(`/api/weight/${weightEntryId}`).send({
-        weight,
-        unit,
-        subject,
-        weightDate,
-        note,
-        userId,
-      });
+      return request(server)
+        .put(`/api/weight/${weightEntryId}`)
+        .set('x-auth-token', token)
+        .send({
+          weight,
+          unit,
+          subject,
+          weightDate,
+          note,
+        });
     }
 
     beforeEach(() => {
       ({ weight, unit, subject, weightDate, note, userId } = weightEntryValues);
+      token = tokenOrigVal;
     });
     afterAll(async () => {
       await User.deleteMany({});
       await WeightEntry.deleteMany({});
+    });
+
+    it("should return 401 status if the request doesn't have a valid JWT", async () => {
+      weightEntryId = new mongoose.Types.ObjectId().toHexString();
+      token = '';
+
+      const res = await exec();
+
+      expect(res.status).toBe(401);
     });
 
     it('should return 400 code if an invalid object id parameter is passed', async () => {
@@ -331,6 +443,24 @@ describe('/api/weight', () => {
       expect(res.status).toBe(400);
     });
 
+    it('should return 400 code if the ID of the requesting user does not match the object/s userId that is the target of the put', async () => {
+      const uploadedWeightEntry = new WeightEntry({
+        weight: 0,
+        unit,
+        subject: subject,
+        weightDate,
+        note,
+        userId: new mongoose.Types.ObjectId().toHexString(),
+      });
+      await uploadedWeightEntry.save();
+
+      weightEntryId = uploadedWeightEntry._id;
+      // userId of the above won't match the userId in the current JWT
+      const res = await exec();
+
+      expect(res.status).toBe(400);
+    });
+
     it('should return 400 code if a non-number weight is passed', async () => {
       weight = null;
 
@@ -339,15 +469,15 @@ describe('/api/weight', () => {
       expect(res.status).toBe(400);
     });
 
-    it('should return 400 if the request userId parameter is not a valid Object Id', async () => {
-      await saveWeightEntry();
+    // it('should return 400 if the request userId parameter is not a valid Object Id', async () => {
+    //   await saveWeightEntry();
 
-      userId = 'a';
+    //   userId = 'a';
 
-      const res = await exec();
+    //   const res = await exec();
 
-      expect(res.status).toBe(400);
-    });
+    //   expect(res.status).toBe(400);
+    // });
 
     it('should return 400 if the given request subject is not assigned to the given userId', async () => {
       await saveWeightEntry();
@@ -372,11 +502,11 @@ describe('/api/weight', () => {
 
       const res = await request(server)
         .put(`/api/weight/${weightEntryId}`)
+        .set('x-auth-token', token)
         .send({
           weight,
           subject,
           note,
-          userId,
         });
 
       expect(res.body.unit).toBe('pounds');
@@ -397,12 +527,12 @@ describe('/api/weight', () => {
 
       const res = await request(server)
         .put(`/api/weight/${weightEntryId}`)
+        .set('x-auth-token', token)
         .send({
           weight,
           unit,
           subject,
           note,
-          userId,
         });
 
       expect(res.body.weightDate).toBeDefined();
