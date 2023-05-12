@@ -4,9 +4,14 @@
   "description": "Private Health Tracker",
   "main": "app.js",
   "scripts": {
-    "start": "node server/app.js",
-    "start:dev": "NODE_ENV=development DEBUG=app:* nodemon server/app.js",
-    "start:prod": "NODE_ENV=production DEBUG=app:* nodemon server/app.js",
+    "server": "NODE_ENV=development node server/app.js",
+    "start:server_dev": "NODE_ENV=development DEBUG=app:* nodemon server/app.js",
+    "start:server_prod": "NODE_ENV=production DEBUG=app:* nodemon server/app.js",
+    "client": "cd client && npm run start",
+    "build:client": "cd client && npm run build",
+    "iall": "npm i && cd client && npm i",
+    "i:client": "cd client && npm i",
+    "startboth": "npm run server & npm run client",
     "test": "jest"
   },
   "repository": {
@@ -41,6 +46,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.21.4",
     "babel-jest": "^29.5.0",
+    "eslint": "^8.40.0",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.0"
   }

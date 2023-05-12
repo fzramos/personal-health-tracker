@@ -1,5 +1,21 @@
 import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
+
+const hitBackend = () => {
+  axios.get('/api/weight').then((response) => {
+    console.log(response.data);
+  });
+  // console.log('hi');
+};
+
+function MainContent() {
+  return (
+    <div>
+      <button onClick={hitBackend}>Send request</button>
+    </div>
+  );
+}
 
 function App() {
   return (
@@ -18,6 +34,7 @@ function App() {
           Learn React
         </a>
       </header>
+      <MainContent />
     </div>
   );
 }
