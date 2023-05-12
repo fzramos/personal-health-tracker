@@ -1,3 +1,4 @@
 {
-  "name": "Private Health Tracker - DEV"
+  "name": "Private Health Tracker - DEV",
+  "db": "healthTrackerDev"
 }

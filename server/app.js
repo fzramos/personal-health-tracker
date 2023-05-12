@@ -1,13 +1,13 @@
-import startupConfig from './startup/config.js';
-startupConfig();
-import createDebug from 'debug';
-const debug = createDebug('app:entry_point');
+import { env } from 'custom-env';
+env();
 import winston from 'winston';
 import express from 'express';
 const app = express();
 
 import logging from './startup/logging.js';
 logging();
+import startupConfig from './startup/config.js';
+startupConfig();
 import db from './startup/db.js';
 db();
 import routes from './startup/routes.js';
