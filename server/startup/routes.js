@@ -9,7 +9,7 @@ import error from '../middleware/error.js';
 export default function (app) {
   app.use(express.json());
 
-  if (app.get('env') === 'development') {
+  if (process.env.NODE_ENV === 'development') {
     app.use(morgan('tiny'));
     winston.info('Morgan activated');
   }

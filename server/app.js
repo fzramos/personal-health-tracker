@@ -14,6 +14,10 @@ import routes from './startup/routes.js';
 routes(app);
 import validation from './startup/validation.js';
 validation();
+import prod from './startup/prod.js';
+if (process.env.NODE_ENV === 'production') {
+  prod(app);
+}
 
 app.get('/', (req, res) => {
   res.send('Hello world');
