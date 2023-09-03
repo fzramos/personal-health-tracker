@@ -26,6 +26,7 @@
   "homepage": "https://github.com/fzramos/personal-health-tracker#readme",
   "type": "module",
   "dependencies": {
+    "@babel/preset-react": "^7.22.5",
     "bcrypt": "^5.1.0",
     "compression": "^1.7.4",
     "config": "^3.3.9",

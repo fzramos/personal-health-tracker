@@ -20,6 +20,7 @@
 .env.test.local
 .env.production
 .env.production.local
+DEV_NOTES.md
 
 npm-debug.log*
 yarn-debug.log*

@@ -1,15 +1,51 @@
 import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
+import Popup from './Popup';
+import { useState } from 'react';
 
-const hitBackend = () => {
-  axios.get('/api/weight').then((response) => {
-    console.log(response.data);
-  });
-  // console.log('hi');
-};
+function Header() {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const openPopup = () => {
+    setIsPopupOpen(true);
+  };
+
+  const closePopup = () => {
+    setIsPopupOpen(false);
+  };
+
+  const handleSignIn = () => {
+    console.log('signing in');
+    return <Popup />;
+  };
+  return (
+    <div>
+      <button onClick={openPopup}>Sign In</button>
+      {isPopupOpen && <Popup onClose={closePopup} />}
+    </div>
+  );
+}
+
+// function Header() {
+//   const handleSignIn = () => {
+//     console.log('signing in');
+//     return <Popup />;
+//   };
+//   return (
+//     <div>
+//       <button onClick={handleSignIn}>Sign In</button>
+//     </div>
+//   );
+// }
 
 function MainContent() {
+  const hitBackend = () => {
+    axios.get('/api/weight').then((response) => {
+      console.log(response.data);
+    });
+    // console.log('hi');
+  };
   return (
     <div>
       <button onClick={hitBackend}>Send request</button>
@@ -20,6 +56,7 @@ function MainContent() {
 function App() {
   return (
     <div className="App">
+      <Header></Header>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
