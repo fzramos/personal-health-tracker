@@ -1,22 +1,21 @@
 import React from 'react';
 import Popup from './Popup';
-// import './Popup.css';
+import { useState } from 'react';
 
 function Header() {
-  // useState returns a boolean and a function to change that boolean
+  // useState will returns a variable and a function to change that variable (or just use setState)
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [isFailedSignin, setIsFailedSignin] = useState(false);
 
   const openPopup = () => {
     setIsPopupOpen(true);
-    setIsFailedSignin(false);
   };
 
   const closePopup = () => {
     setIsPopupOpen(false);
   };
 
-  // can't do this to reveal popup, need STATES
+  // shouldn't do this to reveal popup, need STATES
+  // easiest to implement via CLASS
   // const handleSignIn = () => {
   //   console.log('signing in');
   //   return <Popup />;
@@ -25,25 +24,9 @@ function Header() {
   return (
     <div>
       <button onClick={openPopup}>Sign In</button>
-      {isPopupOpen && (
-        <Popup
-          onClose={closePopup}
-          isFailedSignin={isFailedSignin}
-          setIsFailedSignin
-        />
-      )}
+      {isPopupOpen && <Popup onClose={closePopup} />}
     </div>
   );
 }
 
-// function Header() {
-//   const handleSignIn = () => {
-//     console.log('signing in');
-//     return <Popup />;
-//   };
-//   return (
-//     <div>
-//       <button onClick={handleSignIn}>Sign In</button>
-//     </div>
-//   );
-// }
+export default Header;

@@ -23,6 +23,12 @@
   backdrop-filter: blur(5px);
 }
 
-failedSignInTxt {
+#failedSignInTxt {
   color: red;
+}
+
+button,
+input {
+  display: block;
+  margin-bottom: 10px;
 }

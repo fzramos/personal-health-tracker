@@ -13,7 +13,7 @@ import LoginForm from './LoginForm';
 //   console.log(`user ${e.target.username.value} attempted to sign-in`);
 // };
 
-const Popup = ({ onClose, isFailedSignin, setIsFailedSignin }) => {
+const Popup = ({ onClose }) => {
   // const [errorMessages, setErrorMessages] = useState({});
   // const [isSubmitted, setIsSubmitted] = useState(false);
   // // Generate JSX code for error messages
@@ -27,6 +27,7 @@ const Popup = ({ onClose, isFailedSignin, setIsFailedSignin }) => {
     <div className="popup-container">
       <div className="popup">
         <LoginForm />
+        <button onClick={onClose}>Close</button>
       </div>
     </div>
   );
