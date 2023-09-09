@@ -1,6 +1,7 @@
 import React from 'react';
 import './Popup.css';
 import LoginForm from './LoginForm';
+import RegistrationForm from './RegistrationForm';
 
 // const handleFormSubmit = (e) => {
 //   e.preventDefault();
@@ -13,24 +14,64 @@ import LoginForm from './LoginForm';
 //   console.log(`user ${e.target.username.value} attempted to sign-in`);
 // };
 
-const Popup = ({ onClose }) => {
-  // const [errorMessages, setErrorMessages] = useState({});
-  // const [isSubmitted, setIsSubmitted] = useState(false);
-  // // Generate JSX code for error messages
-  // const renderErrorMessage = (name) => {
-  //   name === errorMessages.name && (
-  //     <div className="error">{errorMessages.message}</div>
-  //   );
-  // };
+// const Popup = ({ onClose }) => {
+//   // TODO: Intelligently determine if popup wil include
+//   // Loginform or RegistrationForm based on the button clicked
+//   // STATE
 
-  return (
-    <div className="popup-container">
-      <div className="popup">
-        <LoginForm />
-        <button onClick={onClose}>Close</button>
+//   return (
+//     <div className="popup-container">
+//       <div className="popup">
+//         <LoginForm />
+//         <button onClick={onClose}>Close</button>
+//       </div>
+//     </div>
+//   );
+// };
+
+// converting into class to better handle states and rendering
+// Now trying to have a state that determines which popup the component renders
+class Popup extends React.Component {
+  // Maybe the input for this component
+  // should be onClose AND a prop to define
+  constructor(props) {
+    super(props);
+    console.log(this.props);
+    this.state = {
+      popup_type: this.props.popup_type,
+    };
+    this.set_popup_type = this.set_popup_type.bind(this);
+  }
+
+  set_popup_type(popup_type) {
+    this.setState({
+      popup_type: popup_type,
+    });
+  }
+
+  render() {
+    console.log(this.state.popup_type);
+    let popup_typeComponent;
+    if (this.state.popup_type === 'login') {
+      popup_typeComponent = (
+        <LoginForm set_popup_type={this.props.set_popup_type} />
+      );
+      // } else if (this.state.popup_type === 'register') {
+    } else {
+      popup_typeComponent = (
+        <RegistrationForm set_popup_type={this.props.set_popup_type} />
+      );
+    }
+    return (
+      <div className="popup-container">
+        <div className="popup">
+          {popup_typeComponent}
+          {/* <LoginForm set_popup_type={this.props.set_popup_type} /> */}
+          <button onClick={this.props.onClose}>Close</button>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 export default Popup;
