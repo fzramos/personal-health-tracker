@@ -1,9 +1,11 @@
 import React from 'react';
 import Alert from './Alert';
+import axios from 'axios';
 
 class LoginForm extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       emailOrUsername: '',
       password: '',
@@ -15,6 +17,7 @@ class LoginForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setAlertMessage = this.setAlertMessage.bind(this);
   }
+
   handleInputChange(event) {
     event.preventDefault();
     const target = event.target;
@@ -22,23 +25,60 @@ class LoginForm extends React.Component {
       [target.name]: target.value,
     }); // setting state of form instance to include username/password values on input chagne
   }
-  handleSubmit(event) {
+
+  async handleSubmit(event) {
     event.preventDefault();
     // reset the alertMessage to empty
     this.setAlertMessage();
     // try to sign in user with the given details
     console.log(`User ${this.state.emailOrUsername} is trying to sign-in`);
     // TODO: API sign in call goes here
+    try {
+      const res = await axios.post('/api/signin', {
+        name: this.state.emailOrUsername,
+        password: this.state.password,
+      });
+      console.log(res);
+      console.log(res.status);
+      //   if (res.status === 400) {
+      //     console.log(res.text);
+      //     const error_message = 'Username and/or password are invalid';
+      //     this.setAlertMessage(error_message);
+      //   }
+    } catch (error) {
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+      //   const error_message = 'Username and/or password are invalid';
+      const error_message = error.response.data;
+      this.setAlertMessage(error_message);
+    }
     // if sign in  fails (catch) then update state of alertMessage
-    const error_message = 'Username and/or password are invalid';
-    this.setAlertMessage(error_message);
+    // const error_message = 'Username and/or password are invalid';
+    // this.setAlertMessage(error_message);
     // NOTE: this is not a set state, it calls a function that will setState
   }
+
+  // function MainContent() {
+  //   const hitBackend = () => {
+  //     axios.get('/api/weight').then((response) => {
+  //       console.log(response.data);
+  //     });
+  //     // console.log('hi');
+  //   };
+  //   return (
+  //     <div>
+  //       <button onClick={hitBackend}>Send request</button>
+  //     </div>
+  //   );
+  // }
 
   setAlertMessage(message) {
     this.setState({ alertMessage: message });
   }
 
+  // add button to change this to REGISTRATIONFORM
+  // which will be a state in Popup
   render() {
     return (
       <div>
