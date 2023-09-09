@@ -4,6 +4,16 @@ import _ from 'lodash';
 import Joi from 'joi';
 import { User } from '../models/user.js';
 import bcrypt from 'bcrypt';
+import winston from 'winston';
+
+const isEmail = (str) => {
+  const result = str.match(
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  );
+  console.log(result);
+  winston.info(result);
+  return result;
+};
 
 router.post('/', async (req, res) => {
   try {
@@ -11,15 +21,19 @@ router.post('/', async (req, res) => {
   } catch (error) {
     return res.status(400).send(error.details[0].message);
   }
-
-  let user = await User.findOne(_.pick(req.body, 'name'));
-  if (!user) return res.status(400).send('Invalid user name or password');
+  let user;
+  if (isEmail(req.body.name)) {
+    user = await User.findOne({ email: req.body.name });
+  } else {
+    user = await User.findOne(_.pick(req.body, 'name'));
+  }
+  if (!user) return res.status(400).send('Invalid username or password');
   const validatePassword = await bcrypt.compare(
     req.body.password,
     user.password
   );
   if (!validatePassword)
-    return res.status(400).send('Invalid user name or password');
+    return res.status(400).send('Invalid username or password');
 
   const token = user.generateAuthToken();
   res.send(token);

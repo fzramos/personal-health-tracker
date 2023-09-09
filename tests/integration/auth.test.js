@@ -10,6 +10,7 @@ let server;
 describe('/api/signin', () => {
   let userId;
   let name;
+  let email;
   let password;
   let subjects;
   let salt;
@@ -23,6 +24,7 @@ describe('/api/signin', () => {
     const { default: myServer } = await import('../../server/app.js');
     server = myServer;
     name = 'reynolds_family';
+    email = 'trashman@paddys.com';
     password = 'password';
     subjects = ['Frank'];
     encrypted_pw = await bcrypt.hash(password, salt);
@@ -53,11 +55,21 @@ describe('/api/signin', () => {
 
       expect(res.status).toBe(200);
     });
+
     it('should return a valid JTW if given user details are passed', async () => {
       const res = await exec();
 
       const decoded = jwt.verify(res.text, process.env.HT_jwtPrivateKey);
       expect(decoded).toHaveProperty('_id', userId);
+    });
+
+    it('should return 200 if valid email and password details are passed to the route', async () => {
+      // const res = await exec();
+      const res = await request(server)
+        .post('/api/signin')
+        .send({ name: email, password });
+
+      expect(res.status).toBe(200);
     });
 
     it('should return 400 status if the given user name is not in the User collection', async () => {
