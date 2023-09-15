@@ -30,19 +30,6 @@ class RegistrationForm extends React.Component {
     }); // setting state of form instance to include username/password values on input chagne
   }
 
-  handleSubjectValueChange(event) {
-    event.preventDefault();
-    const target = event.target;
-    const updatedSubjects = this.state.subjects.map((subject, i) => {
-      if (i.toString() === target.id.replace('subject', '')) {
-        return target.value;
-      } else return subject;
-    });
-    this.setState({
-      subjects: updatedSubjects,
-    }); // setting state of form instance to include username/password values on input chagne
-  }
-
   async handleSubmit(event) {
     event.preventDefault();
     // reset the alertMessage to empty
@@ -79,22 +66,21 @@ class RegistrationForm extends React.Component {
     // NOTE: this is not a set state, it calls a function that will setState
   }
 
-  // function MainContent() {
-  //   const hitBackend = () => {
-  //     axios.get('/api/weight').then((response) => {
-  //       console.log(response.data);
-  //     });
-  //     // console.log('hi');
-  //   };
-  //   return (
-  //     <div>
-  //       <button onClick={hitBackend}>Send request</button>
-  //     </div>
-  //   );
-  // }
-
   setAlertMessage(message) {
     this.setState({ alertMessage: message });
+  }
+
+  handleSubjectValueChange(event) {
+    event.preventDefault();
+    const target = event.target;
+    const updatedSubjects = this.state.subjects.map((subject, i) => {
+      if (i.toString() === target.id.replace('subject', '')) {
+        return target.value;
+      } else return subject;
+    });
+    this.setState({
+      subjects: updatedSubjects,
+    }); // setting state of form instance to include username/password values on input chagne
   }
 
   handleSubjectCountChange(value) {
@@ -113,8 +99,6 @@ class RegistrationForm extends React.Component {
   }
 
   render() {
-    // const subjects = this.state.subjects;
-    // console.log(typeof subjects);
     return (
       <>
         <div>
@@ -131,11 +115,6 @@ class RegistrationForm extends React.Component {
                 placeholder="Enter email"
                 value={this.state.email}
                 onChange={this.handleInputChange}
-
-                //         type="email"
-                //         name="email"
-                //         value={this.state.email}
-                //         onChange={this.handleInputChange}
               />
               <small id="emailHelp" className="form-text text-muted">
                 We'll never share your email with anyone else.
@@ -180,15 +159,6 @@ class RegistrationForm extends React.Component {
 
             <div className="form-group">
               <label htmlFor="registerUsername">Subjects</label>
-              {/* <input
-                type="text"
-                className="form-control"
-                id="subject1"
-                key="1"
-                placeholder="Frank"
-                value={this.state.subjects.subject1}
-                onChange={this.handleInputChange}
-              /> */}
               {this.state.subjects.map((subject, index) => {
                 return (
                   <input
@@ -217,10 +187,6 @@ class RegistrationForm extends React.Component {
                 -
               </button>
             </div>
-            {/* <div className="form-check">
-    <input type="checkbox" className="form-check-input" id="exampleCheck1">
-    <label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
-  </div> */}
             <button type="submit" className="btn btn-primary">
               Register
             </button>
@@ -232,57 +198,3 @@ class RegistrationForm extends React.Component {
 }
 
 export default RegistrationForm;
-
-// <div>
-//   <Alert message={this.state.alertMessage} />
-//   <form onSubmit={this.handleSubmit}>
-//     <label>
-//       Email
-//       <input
-//         type="email"
-//         name="email"
-//         value={this.state.email}
-//         onChange={this.handleInputChange}
-//       />
-//     </label>
-//     <label>
-//       Username
-//       <input
-//         type="text"
-//         name="username"
-//         value={this.state.name}
-//         onChange={this.handleInputChange}
-//       />
-//     </label>
-//     <label>
-//       Password
-//       <input
-//         type="password"
-//         name="password"
-//         value={this.state.password}
-//         onChange={this.handleInputChange}
-//       />
-//     </label>
-//     <label>
-//       Repeat password
-//       <input
-//         type="password"
-//         name="repeat_password"
-//         value={this.state.repeat_password}
-//         onChange={this.handleInputChange}
-//       />
-//     </label>
-//     <label>
-//       People who will use this account
-//       {/* TODO: will default to username */}
-//       {/* TODO: need to intelligently add text box inputs if user presses PLUS */}
-//       <input
-//         type="text"
-//         name="subjects"
-//         value={this.state.subjects}
-//         onChange={this.handleInputChange}
-//       />
-//     </label>
-//     <button type="submit">Register</button>
-//   </form>
-// </div>;

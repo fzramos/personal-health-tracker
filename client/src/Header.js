@@ -1,6 +1,9 @@
 import React from 'react';
 import Popup from './Popup';
 import { useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+// import Col from 'react-bootstrap/Col';
 
 function Header() {
   // useState will returns a variable and a function to change that variable (or just use setState)
@@ -26,11 +29,18 @@ function Header() {
   // };
 
   return (
-    <div>
-      <button onClick={() => openPopup('login')}>Sign In</button>
-      <button onClick={() => openPopup('register')}>Create New Account</button>
+    <Row>
+      <Button variant="primary" onClick={() => openPopup('login')}>
+        Sign In
+      </Button>
+      <button
+        className="btn btn-secondary"
+        onClick={() => openPopup('register')}
+      >
+        Create New Account
+      </button>
       {isPopupOpen && <Popup onClose={closePopup} popup_type={popup_type} />}
-    </div>
+    </Row>
   );
 }
 

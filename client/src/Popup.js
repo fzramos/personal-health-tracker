@@ -67,7 +67,9 @@ class Popup extends React.Component {
         <div className="popup">
           {popup_typeComponent}
           {/* <LoginForm set_popup_type={this.props.set_popup_type} /> */}
-          <button onClick={this.props.onClose}>Close</button>
+          <button onClick={this.props.onClose} className="btn btn-secondary">
+            Close
+          </button>
         </div>
       </div>
     );

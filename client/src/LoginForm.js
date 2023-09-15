@@ -59,20 +59,6 @@ class LoginForm extends React.Component {
     // NOTE: this is not a set state, it calls a function that will setState
   }
 
-  // function MainContent() {
-  //   const hitBackend = () => {
-  //     axios.get('/api/weight').then((response) => {
-  //       console.log(response.data);
-  //     });
-  //     // console.log('hi');
-  //   };
-  //   return (
-  //     <div>
-  //       <button onClick={hitBackend}>Send request</button>
-  //     </div>
-  //   );
-  // }
-
   setAlertMessage(message) {
     this.setState({ alertMessage: message });
   }
@@ -84,25 +70,33 @@ class LoginForm extends React.Component {
       <div>
         <Alert message={this.state.alertMessage} />
         <form onSubmit={this.handleSubmit}>
-          <label>
-            Email or username
+          <div className="form-group">
+            <label htmlFor="loginUsername">Email or username</label>
             <input
               type="text"
+              className="form-control"
               name="emailOrUsername"
+              id="loginUsername"
+              placeholder="Email or username"
               value={this.state.emailOrUsername}
               onChange={this.handleInputChange}
             />
-          </label>
-          <label>
-            Password
+          </div>
+          <div className="form-group">
+            <label htmlFor="loginPassword">Password</label>
             <input
               type="password"
+              className="form-control"
               name="password"
+              id="loginPassword"
+              placeholder="Password"
               value={this.state.password}
               onChange={this.handleInputChange}
             />
-          </label>
-          <button type="submit">Log In</button>
+          </div>
+          <button type="submit" className="btn btn-primary">
+            Log-in
+          </button>
         </form>
       </div>
     );
@@ -110,3 +104,25 @@ class LoginForm extends React.Component {
 }
 
 export default LoginForm;
+
+// <form onSubmit={this.handleSubmit}>
+//   <label>
+//     Email or username
+//     <input
+//       type="text"
+//       name="emailOrUsername"
+//       value={this.state.emailOrUsername}
+//       onChange={this.handleInputChange}
+//     />
+//   </label>
+//   <label>
+//     Password
+//     <input
+//       type="password"
+//       name="password"
+//       value={this.state.password}
+//       onChange={this.handleInputChange}
+//     />
+//   </label>
+//   <button type="submit">Log In</button>
+// </form>
