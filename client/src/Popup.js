@@ -63,7 +63,7 @@ class Popup extends React.Component {
       );
     }
     return (
-      <div className="popup-container">
+      <div className="popup-container" data-bs-theme="light">
         <div className="popup">
           {popup_typeComponent}
           {/* <LoginForm set_popup_type={this.props.set_popup_type} /> */}
