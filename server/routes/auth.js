@@ -4,6 +4,7 @@ import _ from 'lodash';
 import Joi from 'joi';
 import { User } from '../models/user.js';
 import bcrypt from 'bcrypt';
+import { serialize } from 'cookie';
 import winston from 'winston';
 
 const isEmail = (str) => {
@@ -36,7 +37,25 @@ router.post('/', async (req, res) => {
     return res.status(400).send('Invalid username or password');
 
   const token = user.generateAuthToken();
-  res.send(token);
+  // TODO: Add expiresIn to above function
+  const serialized = serialize('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // HTTPS only if in production environment
+    sameSite: 'strict', // Cookie only sends if same site (official client site only)
+    maxAge: 60 * 60 * 24 * 30, // Change this
+    path: '/',
+  });
+  res.setHeader('Set-Cookie', serialized);
+  // res.send(token);
+  res.json({
+    sucess: true,
+    token: token,
+    user: {
+      _id: user._id,
+      email_or_username: req.body.name,
+      subjects: user.subjects,
+    },
+  });
 });
 
 async function validate(credentials) {
