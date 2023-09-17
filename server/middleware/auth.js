@@ -1,7 +1,15 @@
 import jwt from 'jsonwebtoken';
+// impoort winston
+import { serialize } from 'cookie';
+import winston from 'winston';
 
 export default function (req, res, next) {
-  const token = req.header('x-auth-token');
+  winston.info(req.cookies);
+  let token = req.header('x-auth-token');
+
+  if (!token) {
+    token = req.cookies.token;
+  }
   if (!token) {
     return res.status(401).send('Access denied. No token provided.');
   }

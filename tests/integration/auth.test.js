@@ -2,7 +2,6 @@ import request from 'supertest';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import config from 'config';
 import _ from 'lodash';
 import { User } from '../../server/models/user.js';
 let server;
@@ -30,6 +29,7 @@ describe('/api/signin', () => {
     encrypted_pw = await bcrypt.hash(password, salt);
     const user = new User({
       name,
+      email,
       password: encrypted_pw,
       subjects,
     });
@@ -59,7 +59,7 @@ describe('/api/signin', () => {
     it('should return a valid JTW if given user details are passed', async () => {
       const res = await exec();
 
-      const decoded = jwt.verify(res.text, process.env.HT_jwtPrivateKey);
+      const decoded = jwt.verify(res._body.token, process.env.HT_jwtPrivateKey);
       expect(decoded).toHaveProperty('_id', userId);
     });
 

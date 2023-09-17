@@ -1,5 +1,6 @@
 import express from 'express';
 import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 import winston from 'winston';
 import weight from '../routes/weight.js';
 import user from '../routes/user.js';
@@ -8,6 +9,8 @@ import error from '../middleware/error.js';
 
 export default function (app) {
   app.use(express.json());
+  // for React HTTP Only cookie parsing
+  app.use(cookieParser());
 
   if (process.env.NODE_ENV === 'development') {
     app.use(morgan('tiny'));
