@@ -7,6 +7,7 @@ const LoginForm = (props) => {
   const [emailOrUsername, setEmailOrUsername] = useState('');
   const [password, setPassword] = useState('');
   const [alertMessage, setAlertMessage] = useState();
+  const { close_popup } = props;
 
   const { login } = React.useContext(AuthContext);
 
@@ -19,6 +20,7 @@ const LoginForm = (props) => {
         password: password,
       };
       await login(payload);
+      close_popup();
     } catch (error) {
       const error_message = error.response.data;
       setAlertMessage(error_message);

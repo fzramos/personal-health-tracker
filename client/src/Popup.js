@@ -36,7 +36,6 @@ class Popup extends React.Component {
   // should be onClose AND a prop to define
   constructor(props) {
     super(props);
-    console.log(this.props);
     this.state = {
       popup_type: this.props.popup_type,
     };
@@ -50,23 +49,27 @@ class Popup extends React.Component {
   }
 
   render() {
-    console.log(this.state.popup_type);
     let popup_typeComponent;
     if (this.state.popup_type === 'login') {
       popup_typeComponent = (
-        <LoginForm set_popup_type={this.props.set_popup_type} />
+        <LoginForm
+          set_popup_type={this.props.set_popup_type}
+          close_popup={this.props.onClose}
+        />
       );
       // } else if (this.state.popup_type === 'register') {
     } else {
       popup_typeComponent = (
-        <RegistrationForm set_popup_type={this.props.set_popup_type} />
+        <RegistrationForm
+          set_popup_type={this.props.set_popup_type}
+          close_popup={this.props.onClose}
+        />
       );
     }
     return (
       <div className="popup-container" data-bs-theme="light">
         <div className="popup">
           {popup_typeComponent}
-          {/* <LoginForm set_popup_type={this.props.set_popup_type} /> */}
           <button onClick={this.props.onClose} className="btn btn-secondary">
             Close
           </button>
