@@ -19,10 +19,23 @@ export const AuthContextProvider = ({ children }) => {
     setUser(res.data.user);
     navigate('/');
   };
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+  };
+  const logout = async () => {
+    await axios.post('/api/logout', {}, config);
+    // delete item in localStorage?
+    localStorage.setItem('userProfile', '');
+    setUser();
+    navigate('/');
+  };
 
   return (
     <>
-      <AuthContext.Provider value={{ user, login }}>
+      <AuthContext.Provider value={{ user, login, logout }}>
         {children}
       </AuthContext.Provider>
     </>
