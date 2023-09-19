@@ -5,6 +5,7 @@ import winston from 'winston';
 import weight from '../routes/weight.js';
 import user from '../routes/user.js';
 import auth from '../routes/auth.js';
+import logout from '../routes/logout.js';
 import error from '../middleware/error.js';
 
 export default function (app) {
@@ -20,6 +21,7 @@ export default function (app) {
   app.use('/api/weight', weight);
   app.use('/api/user', user);
   app.use('/api/signin', auth);
+  app.use('/api/logout', logout);
 
   app.use(error);
 }

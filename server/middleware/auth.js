@@ -1,10 +1,6 @@
 import jwt from 'jsonwebtoken';
-// impoort winston
-import { serialize } from 'cookie';
-import winston from 'winston';
 
 export default function (req, res, next) {
-  winston.info(req.cookies);
   let token = req.header('x-auth-token');
 
   if (!token) {
