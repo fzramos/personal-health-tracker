@@ -17,7 +17,7 @@ export const AuthContextProvider = ({ children }) => {
     const res = await axios.post('/api/signin', payload);
     localStorage.setItem('userProfile', JSON.stringify(res.data.user));
     setUser(res.data.user);
-    navigate('/');
+    navigate('/weight');
   };
   const config = {
     headers: {

@@ -31,7 +31,9 @@ const Layout = ({ children }) => {
             <Navbar variant="brand">Health App</Navbar>
           </Navbar>
           <Nav>
-            <Nav.Link href="#">Home</Nav.Link>
+            <Nav.Link as={Link} to="/">
+              Home
+            </Nav.Link>
             {user && (
               <Nav.Link as={Link} to="/weight">
                 Weight

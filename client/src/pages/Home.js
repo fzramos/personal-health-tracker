@@ -11,10 +11,7 @@ const Home = () => {
         >
           <Card>
             <Card.Body>
-              <Card.Text>
-                Welcome to demo on ReactJS (v18) Jwt Authentication with HTTP
-                Only cookie
-              </Card.Text>
+              <Card.Text>Welcome! Please sign-up or log-in to start!</Card.Text>
             </Card.Body>
           </Card>
         </div>
