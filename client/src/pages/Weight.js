@@ -1,5 +1,7 @@
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
+import { WeightContextProvider } from '../components/shared/WeightContext';
+import WeightForm from '../components/shared/WeightForm';
 
 export default function Weight(props) {
   const hitBackend = () => {
@@ -13,11 +15,16 @@ export default function Weight(props) {
       console.log(response.data);
     });
   };
+
   return (
-    <div>
-      <Button variant="primary" onClick={hitBackend}>
-        Send request
-      </Button>
-    </div>
+    <>
+      <WeightContextProvider>
+        {' '}
+        <Button variant="primary" onClick={hitBackend}>
+          Send request
+        </Button>
+        <WeightForm></WeightForm>
+      </WeightContextProvider>
+    </>
   );
 }

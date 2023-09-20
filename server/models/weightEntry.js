@@ -39,7 +39,7 @@ const WeightEntry = mongoose.model('Weight', weightEntrySchema);
 const validateWeightEntry = (user) => {
   const schema = Joi.object({
     weight: Joi.number().min(0).max(1000).required(),
-    unit: Joi.string().valid('pounds', 'kilogram'),
+    unit: Joi.string().valid('pounds', 'kilograms'),
     subject: Joi.string().min(1).max(100).required(),
     weightDate: Joi.date().optional(),
     note: Joi.string().max(300).optional(),
