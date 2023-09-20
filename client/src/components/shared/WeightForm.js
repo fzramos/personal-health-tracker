@@ -69,7 +69,7 @@ export default function WeightForm(props) {
     <>
       <Form
         onSubmit={handleSubmit}
-        style={{ margin: 'auto', maxWidth: '600px' }}
+        style={{ margin: 'auto', maxWidth: '1000px' }}
       >
         <Row className="align-items-center">
           <Col xs="auto">
