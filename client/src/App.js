@@ -8,6 +8,7 @@ import { AuthContextProvider } from './components/shared/AuthContext';
 function App() {
   return (
     <>
+      {/* If Logged In, home should redirect to /weight */}
       <AuthContextProvider>
         <Layout>
           <Routes>
