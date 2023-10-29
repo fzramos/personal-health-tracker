@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const instance = axios.create();
+const api = axios.create();
 
 axios.interceptors.response.use(
   (response) => response,
@@ -15,4 +15,21 @@ axios.interceptors.response.use(
   }
 );
 
-export default instance;
+export const getWeightRecords = async () => {
+  const res = await api.get('/api/weight', { withCredentials: true });
+  return res.data;
+};
+
+export const postWeightRecord = async (payload) => {
+  await api.post('/api/weight', payload, { withCredentials: true });
+
+  // const weightEntryObj = _.pick(req.body, [
+  //   'weight',
+  //   'unit',
+  //   'subject',
+  //   'weightDate',
+  //   'note',
+  // ]);
+};
+
+export default api;

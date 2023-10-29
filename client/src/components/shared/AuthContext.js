@@ -8,6 +8,7 @@ export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     let userProfile = localStorage.getItem('userProfile');
     if (userProfile) {
+      // console.log(JSON.parse(userProfile));
       return JSON.parse(userProfile);
     }
     return null;

@@ -1,18 +1,31 @@
 import { useEffect, useContext } from 'react';
 import Table from 'react-bootstrap/Table';
-import WeightContext from './WeightContext';
 import Row from 'react-bootstrap/Row';
+import { useQuery } from '@tanstack/react-query';
+import { getWeightRecords } from '../../services/api';
 
 export default function WeightTable(props) {
-  const { refreshWeightRecords, weightRecords } = useContext(WeightContext);
+  const weightRecordsQuery = useQuery({
+    queryKey: ['weightRecords'],
+    queryFn: getWeightRecords,
+  });
 
-  useEffect(() => {
-    refreshWeightRecords();
-  }, []);
+  if (weightRecordsQuery.isLoading) {
+    return <h1>Loading table</h1>;
+  }
 
-  const tableRows = weightRecords.map((elem) => {
+  if (weightRecordsQuery.isError) {
     return (
-      <tr key={elem._id}>
+      <>
+        <h1>Error loading weight records table</h1>
+        <p>{weightRecordsQuery.error}</p>
+      </>
+    );
+  }
+
+  const tableRows = weightRecordsQuery.data.map((elem) => {
+    return (
+      <tr id={elem._id} key={elem._id}>
         <td>{elem.subject}</td>
         <td>{elem.weight}</td>
         <td>{elem.unit}</td>

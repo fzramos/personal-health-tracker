@@ -11,7 +11,7 @@
     "build:client": "cd client && npm run build",
     "iall": "npm i && cd client && npm i",
     "i:client": "cd client && npm i",
-    "startboth": "npm run server & npm run client",
+    "startboth": "BROWSER='firefox developer edition' npm run server & npm run client",
     "test": "jest"
   },
   "repository": {
@@ -49,6 +49,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.21.4",
+    "@tanstack/react-query-devtools": "^5.4.3",
     "babel-jest": "^29.5.0",
     "eslint": "^8.40.0",
     "supertest": "^6.3.3",

@@ -44,7 +44,9 @@ const Layout = ({ children }) => {
             {user && (
               <>
                 <Nav.Link>{user?.email_or_username}</Nav.Link>
-                <Nav.Link onClick={async () => await logout()}>Logout</Nav.Link>
+                <Nav.Link id="logout" onClick={async () => await logout()}>
+                  Logout
+                </Nav.Link>
                 {/* If logout clicked, flash a quick message saying LOGGED OUT */}
               </>
             )}

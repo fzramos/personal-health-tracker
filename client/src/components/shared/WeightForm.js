@@ -1,27 +1,57 @@
 import Button from 'react-bootstrap/Button';
-import axios from 'axios';
+import api from '../../services/api';
 import { useEffect, useState, useContext } from 'react';
 import AuthContext from './AuthContext';
-import WeightContext from './WeightContext';
+// import WeightContext from './WeightContext';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import _ from 'lodash';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getWeightRecords, postWeightRecord } from '../../services/api';
 
 export default function WeightForm(props) {
-  const { refreshWeightRecords, weightRecords } = useContext(WeightContext);
+  const queryClient = useQueryClient();
+  // TODO: REMOVE THIS
+  // const { refreshWeightRecords, weightRecords } = useContext(WeightContext);
   const { user } = useContext(AuthContext);
 
-  useEffect(() => {
-    refreshWeightRecords();
-  }, []);
+  // useEffect(() => {
+  //   refreshWeightRecords();
+  // }, []);
 
   const [selectedSubject, setSelectedSubject] = useState(user.subjects[0]);
 
+  const weightRecordsQuery = useQuery({
+    queryKey: ['weightRecords'],
+    queryFn: getWeightRecords,
+    placeholderData: [
+      {
+        _id: '0',
+        weight: 150,
+        unit: 'pounds',
+        subject: 'Frank',
+        userId: '0',
+        weightDate: '2023-09-19T05:00:00.000Z',
+      },
+    ],
+  });
+
+  const weightRecordMutation = useMutation({
+    mutationFn: postWeightRecord,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['weightRecords'], { exact: true });
+      // if there's ever weight entry individual pages, could also
+      queryClient.setQueryData(['weightRecords', data.id], data);
+      // to add post results to the cache RIGHT away
+    },
+  });
+
   const getFormWeightDefault = (subject) => {
     // default weight in form will be latest weight of first subject
+    // TODO do a weight useQUERY here to get weightRecords (will pull from cache)
     let subject1WeightRecords = _.filter(
-      weightRecords,
+      weightRecordsQuery.data,
       (o) => o.subject === subject
     );
     let latestSubject1Weight;
@@ -41,7 +71,7 @@ export default function WeightForm(props) {
     getFormWeightDefault(selectedSubject)
   );
   const [selectedWeightUnits, setSelectedWeightUnits] = useState('pounds');
-  const [formNote, setFormNote] = useState();
+  const [formNote, setFormNote] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -51,13 +81,16 @@ export default function WeightForm(props) {
         unit: selectedWeightUnits,
         subject: selectedSubject,
       };
-      await axios.post('/api/weight', payload, { withCredentials: true });
+      // TODO: useMutation and invalidate WEIGHT
+      weightRecordMutation.mutate(payload);
+      // await api.post('/api/weight', payload, { withCredentials: true });
       // moving default subject on form to next available subject if they exist
       const currentSubjectIndex = user.subjects.indexOf(selectedSubject);
       const newSubjectIndex = (currentSubjectIndex + 1) % user.subjects.length;
       setSelectedSubject(user.subjects[newSubjectIndex]);
       setSelectedWeight(getFormWeightDefault(user.subjects[newSubjectIndex]));
-      await refreshWeightRecords();
+      // TODO: delete this since it will be handled by useMutation validate
+      // await refreshWeightRecords();
     } catch (error) {
       const error_message = error.response.data;
       console.log(error_message);

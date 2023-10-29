@@ -22,6 +22,10 @@
 .env.production.local
 DEV_NOTES.md
 client/src/LoginFormClass.js
+WeightChartv1Func.js
+WeightChartv1.js
+WeightContextv2.js
+WeightContextv1.js
 
 npm-debug.log*
 yarn-debug.log*
