@@ -10,7 +10,7 @@ import {
   Tooltip,
   Legend,
 } from 'recharts';
-import { useContext, useState, useEffect } from 'react';
+import { useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import moment from 'moment';
 
